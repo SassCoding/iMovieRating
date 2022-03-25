@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@500;800&family=Merriweather:wght@300&display=swap');
+*{
+    font-family: 'Dosis', serif;
+}
+
+.container-2{
+    background: linear-gradient(to bottom,#f83600,#fe8c00);
+    height: 100vh;
+    border: 3px solid white;
+}
+
+.card{
+    margin: 10px;
+    background-color: white;
+    font-family: 'Merriweather', serif;
+    transition: 0.5s ease;
+}
+
+.card:hover {
+    transform: scale(1.2);
+    box-shadow: 5px 10px 15px rgb(0, 0, 0);
+
+}
+
+/*Login Form*/
+
+.form_bg{
+    background: linear-gradient(to bottom,#f83600,#fe8c00);
+    height: 100vh;
+    display: flex;
+    align-items:center;
+    border: 2px solid white;
+}
+
+.form_horizontal{
+    border: 2px solid white;
+    text-align: center;
+}
+
+.form_horizontal .form_icon{
+    color: #fff;
+    font-size: 100px;
+    line-height: 85px;
+    margin: 0 0 13px;
+}
+
+.form_horizontal .title{
+    color: #fff;
+    font-size: 23px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: 0 0 35px 0;
+}
+
+.form_horizontal .form-group{
+    margin: 0 0 10px;
+    position: relative;
+}
+
+.form_horizontal .input-icon{
+    position:absolute;
+    left: 15px;
+    top:50%;
+    transform: translateY(-50%);
+    font-size: 13px;
+    color: #777;
+}
+
+
