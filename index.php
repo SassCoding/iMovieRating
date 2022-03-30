@@ -4,6 +4,7 @@ require('connect.php');
 session_start();
 $_SESSION;
 
+$username = $_SESSION["username"];
 $query = "SELECT * FROM movie WHERE category_id = 1";
 
 $statement = $db->prepare($query);
@@ -65,7 +66,7 @@ $statement->execute();
                         <img src="images/starwars.png" alt="Star Wars" class="card-img-top">
                         <starwars></starwars>
                         <div class="card-body">
-                            <h5 class="card-title"><?= $row['movie_name']?></h5>
+                            <h5 class="card-title"><?= $username?></h5>
                             <p class="card-text"><?= $row['description'] ?></p>
                             <a href="ratings.php?id=<?= $row['movie_id'] ?>" class="btn btn-primary">View Ratings and Reviews</a>
                         </div>
