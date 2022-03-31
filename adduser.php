@@ -22,7 +22,7 @@
             // If passwords match, exectue the database insert of the new user.
             if($_POST['password'] == $_POST['passwordConfirm'])
             {
-                $hashedPassword = $password;
+                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
                 $insertQuery = "INSERT INTO user (user_name, password, email) VALUES (:username, :password, :email)";
 
                 $insertStatement = $db->prepare($insertQuery);
@@ -32,7 +32,7 @@
                 $insertStatement->bindValue(':email', $email);
     
                 $insertStatement->execute();
-                header('Location: index.php');
+                header('Location: adminpanel.php');
             }
             else
             {
@@ -112,7 +112,7 @@
                         </div>
                             <h3 class="title">Create Account</h3>
                             <div class="form-group">
-                                <label class="fs-3" for="Username">Enter your User Name</label>
+                                <label class="fs-3" for="Username">Enter New User Name</label>
                                 <input type="text" class="form-control" name="username" type="text" placeholder="username">
                                 <?php if(isset($userNameError)): ?>
                                     <p class="fs-5"><?= $userNameError ?></p>

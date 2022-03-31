@@ -17,11 +17,11 @@
 
     //Build our second query for the reviews.
     $query2 = "SELECT * FROM review WHERE movie_id = :id";
-    $statement = $db->prepare($query2);
-    $statement->bindValue(':id', $id, PDO::PARAM_INT);
+    $selectStatement = $db->prepare($query2);
+    $selectStatement->bindValue(':id', $id, PDO::PARAM_INT);
 
     // Execute the SELECT and fetch the single row returned.
-    $statement->execute();
+    $selectStatement->execute();
 
 
 ?>
@@ -84,13 +84,13 @@
     </div>
     <div class="list-group">
             
-    <?php while($rowQuery2 = $statement->fetch()): ?>
+    <?php while($rowQuery2 = $selectStatement->fetch()): ?>
         <a class="list-group-item list-group-item-action" aria-current="true">
         <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1"><?= $rowQuery2['user_id'] ?></h5>
+            <h5 class="mb-1"><?= $rowQuery2['author'] ?></h5>
             <p class="mb-1"><?= $rowQuery2['content'] ?></p>
             <small><?= $rowQuery2['date'] ?></small>
-            <?php if($_SESSION['user_id'] == $rowQuery2['user_id']): ?>
+            <?php $userId = $rowQuery2['user_id']; if($_SESSION['user_id'] == $rowQuery2['user_id']): ?>
                 <a href="edit.php?id=<?= $rowQuery2['review_id'] ?>" class="btn btn-info">Edit</a>
             <?php elseif($_SESSION['username'] == "admin"): ?>
                 <a href="edit.php?id=<?= $rowQuery2['review_id'] ?>" class="btn btn-info">Edit</a>

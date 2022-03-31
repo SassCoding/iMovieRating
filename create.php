@@ -7,11 +7,13 @@
         $content = filter_input(INPUT_POST, 'content', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $movie_id = $_SESSION['movieId'];
 
-        $query = "INSERT INTO review (movie_id, content) VALUES (:movie_id, :content)";
+        $query = "INSERT INTO review (movie_id, content, user_id, author) VALUES (:movie_id, :content, :user_id, :author)";
         $statement = $db->prepare($query);
 
         $statement->bindValue(':content', $content);
         $statement->bindValue(':movie_id', $movie_id);
+        $statement->bindValue(':user_id', $_SESSION['user_id']);
+        $statement->bindValue(':author', $_SESSION['username']);
 
         $statement->execute();
         $redirect = "Location: ratings.php?id=".$movie_id;               

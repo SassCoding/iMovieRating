@@ -26,13 +26,13 @@
                 header("Location: index.php");
             }
             else{
-                $passwordError = "dbpass: ".$selectRow['password']." entered pass: ".$password;
+                $passwordError = "Username or Password is incorrect. Please try again.";
             }
         }
-        if(empty($_POST['username'])){
+        if($_POST && empty($_POST['username'])){
             $userNameError = "Please enter a valid user name.";
         }
-        if(empty($_POST['password'])){
+        if($_POST && empty($_POST['password'])){
             $passwordError = "Please enter a valid password.";
         }
     
