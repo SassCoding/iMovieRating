@@ -8,7 +8,7 @@
         { 
             // Filter and set variables.
             $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $password = $_POST['password'];
             $passwordConfirm = filter_input(INPUT_POST, 'passwordConfirm', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $email = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
 
@@ -22,20 +22,21 @@
             // If passwords match, exectue the database insert of the new user.
             if($_POST['password'] == $_POST['passwordConfirm'])
             {
-            $insertQuery = "INSERT INTO user (user_name, password, email) VALUES (:username, :password, :email)";
+                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                $insertQuery = "INSERT INTO user (user_name, password, email) VALUES (:username, :password, :email)";
 
-            $insertStatement = $db->prepare($insertQuery);
+                $insertStatement = $db->prepare($insertQuery);
 
-            $insertStatement->bindValue(':username', $username);
-            $insertStatement->bindValue(':password', $password);
-            $insertStatement->bindValue(':email', $email);
+                $insertStatement->bindValue(':username', $username);
+                $insertStatement->bindValue(':password', $hashedPassword);
+                $insertStatement->bindValue(':email', $email);
     
-            $insertStatement->execute();
-            header('Location: index.php');
+                $insertStatement->execute();
+                header('Location: index.php');
             }
             else
             {
-                $passwordConfirmationError = "Pass didnt match";
+                $passwordConfirmationError = "Passwords didnt match";
             }
         }
         if(empty($_POST['username'])){
@@ -65,7 +66,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="style.css">
     
-    <title>iMovieRatings | Sign-Up</title>
+    <title>iMovieRatings | Edit User</title>
 
 </head>
 <body>
@@ -73,7 +74,7 @@
 <!-- NavBar -->
     <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
         <div class="container">
-            <a href="#" class="navbar-brand">iMovieRatings</a>
+            <a href="index.php" class="navbar-brand">iMovieRatings</a>
             <button 
                 class="navbar-toggler" 
                 type="button" 

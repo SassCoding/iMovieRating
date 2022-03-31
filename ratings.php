@@ -22,9 +22,6 @@
 
     // Execute the SELECT and fetch the single row returned.
     $statement->execute();
-    
-
-    $user id = 
 
 
 ?>
@@ -42,7 +39,7 @@
 <!-- NavBar -->
 <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
         <div class="container">
-            <a href="#" class="navbar-brand">iMovieRatings</a>
+            <a href="index.php" class="navbar-brand">iMovieRatings</a>
 
             <button 
                 class="navbar-toggler" 
@@ -93,7 +90,11 @@
             <h5 class="mb-1"><?= $rowQuery2['user_id'] ?></h5>
             <p class="mb-1"><?= $rowQuery2['content'] ?></p>
             <small><?= $rowQuery2['date'] ?></small>
-            <a href="edit.php?id=<?= $rowQuery2['review_id'] ?>" class="btn btn-info">Edit</a>
+            <?php if($_SESSION['user_id'] == $rowQuery2['user_id']): ?>
+                <a href="edit.php?id=<?= $rowQuery2['review_id'] ?>" class="btn btn-info">Edit</a>
+            <?php elseif($_SESSION['username'] == "admin"): ?>
+                <a href="edit.php?id=<?= $rowQuery2['review_id'] ?>" class="btn btn-info">Edit</a>
+            <?php endif ?>
         </div>    
     <?php endwhile ?>
 

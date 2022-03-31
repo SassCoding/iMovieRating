@@ -4,7 +4,6 @@ require('connect.php');
 session_start();
 $_SESSION;
 
-$username = $_SESSION["username"];
 $query = "SELECT * FROM movie WHERE category_id = 1";
 
 $statement = $db->prepare($query);
@@ -26,27 +25,32 @@ $statement->execute();
     <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
         <div class="container">
             <a href="#" class="navbar-brand">iMovieRatings</a>
-
             <button 
                 class="navbar-toggler" 
                 type="button" 
                 data-bs-toggle="collapse" 
                 data-bs-target="#navmenu"
             >
-             <span class="span-navbar-toggler-icon"></span>
+             <span class="span-navbar-toggler-icon"><i class="bi bi-list"></i></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navmenu">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a href="index.php" class="nav-link">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="login.php" class="nav-link">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#logout" class="nav-link">Logout</a>
-                    </li>
+                    <?php if($_SESSION['username']): ?>
+                        <p class="text-light">Hello, <?= $_SESSION['username'] ?></p>
+                        <li class="nav-item">
+                            <a href="logout.php" class="nav-link">Logout</a>
+                        </li>
+                    <?php else : ?>
+                        <li class="nav-item">
+                            <a href="login.php" class="nav-link">Login</a>
+                        </li>
+                    <?php endif ?>
+                    <?php if($_SESSION['username'] == "admin"): ?>
+                        <li class="nav-item">
+                            <a href="adminpanel.php" class="nav-link">Admin Panel</a>
+                        </li>
+                    <?php endif ?>
                 </ul>
                 <input class = "search" type="text">
                 <button type="button" class="btn btn-danger">Search</button>
@@ -66,7 +70,7 @@ $statement->execute();
                         <img src="images/starwars.png" alt="Star Wars" class="card-img-top">
                         <starwars></starwars>
                         <div class="card-body">
-                            <h5 class="card-title"><?= $username?></h5>
+                            <h5 class="card-title"><?= $row['movie_name']?></h5>
                             <p class="card-text"><?= $row['description'] ?></p>
                             <a href="ratings.php?id=<?= $row['movie_id'] ?>" class="btn btn-primary">View Ratings and Reviews</a>
                         </div>

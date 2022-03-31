@@ -62,7 +62,7 @@
     <!-- NavBar -->
     <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
         <div class="container">
-            <a href="#" class="navbar-brand">iMovieRatings</a>
+            <a href="index.php" class="navbar-brand">iMovieRatings</a>
 
             <button 
                 class="navbar-toggler" 

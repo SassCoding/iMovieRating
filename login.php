@@ -4,28 +4,29 @@
 
     $_SESSION;
 
-    if($_SERVER["REQUEST_METHOD"] == "POST")
-        {
+
         if($_POST && !empty($_POST['username']) && !empty($_POST['password']))
         {
             //Filter login information from the user.
             $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_SPECIAL_CHARS);
-            $password =  filter_input(INPUT_POST, 'password', FILTER_SANITIZE_SPECIAL_CHARS);
+            $password =  trim($_POST['password']);
 
             //Create select query, prepare, execute, and fetch.
-            $selectStatement = "SELECT * FROM user WHERE user_name = '$username' AND password = '$password'";
-            $selectStatement = $db->prepare($selectStatement);
+            $selectQuery = "SELECT * FROM user WHERE user_name = :user_name";
+            $selectStatement = $db->prepare($selectQuery);
+            $selectStatement->bindParam(':user_name', $username);
             $selectStatement->execute();
-            $row = $selectStatement->fetch();        
+            $selectRow = $selectStatement->fetch();     
 
+            if($password == $selectRow['password']){
+                $_SESSION["username"] = $selectRow["user_name"];
+                $_SESSION["password"] = $selectRow["password"];
+                $_SESSION["user_id"] = $selectRow["user_id"];
 
-            if (!$row == null){
-                $_SESSION["username"] = $row["user_name"];
-                $_SESSION["password"] = $row["password"];
+                header("Location: index.php");
             }
-
-            if(isset($_SESSION["username"])){
-                header("Location:index.php");
+            else{
+                $passwordError = "dbpass: ".$selectRow['password']." entered pass: ".$password;
             }
         }
         if(empty($_POST['username'])){
@@ -34,8 +35,9 @@
         if(empty($_POST['password'])){
             $passwordError = "Please enter a valid password.";
         }
-    }
+    
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -55,7 +57,7 @@
 <!-- NavBar -->
     <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
         <div class="container">
-            <a href="#" class="navbar-brand">iMovieRatings</a>
+            <a href="index.php" class="navbar-brand">iMovieRatings</a>
             <button 
                 class="navbar-toggler" 
                 type="button" 
@@ -72,9 +74,6 @@
                     </li>
                     <li class="nav-item">
                         <a href="login.php" class="nav-link">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#logout" class="nav-link">Logout</a>
                     </li>
                 </ul>
                 <input class = "search" type="text">
