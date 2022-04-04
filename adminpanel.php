@@ -64,7 +64,6 @@
                         <tr>
                             <th scope="col">User ID</th>
                             <th scope="col">Username</th>
-                            <th scope="col">Password</th>
                             <th scope="col">Email</th>
                             <th scope="col">Modify</th>
                         </tr>
@@ -74,7 +73,6 @@
                             <tr>
                                 <th scope="row" name="user_id"><?= $selectRow['user_id'] ?></th>
                                 <td><?= $selectRow['user_name'] ?></td>
-                                <td><?= $selectRow['password'] ?></td>
                                 <td><?= $selectRow['email'] ?></td>
                                 <td>
                                 <a href="edituser.php?id=<?= $selectRow['user_id'] ?>" class="btn btn-info">Edit</a>

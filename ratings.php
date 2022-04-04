@@ -7,21 +7,21 @@
     $_SESSION['movieId'] = $id;
 
     // Build the first query for the movie information.
-    $query = "SELECT * FROM movie WHERE movie_id = :id";
-    $statement = $db->prepare($query);
-    $statement->bindValue(':id', $id, PDO::PARAM_INT);
+    $querySelectMovie = "SELECT * FROM movie WHERE movie_id = :id";
+    $selectMovieStatement = $db->prepare($querySelectMovie);
+    $selectMovieStatement->bindValue(':id', $id, PDO::PARAM_INT);
 
     // Execute the SELECT and fetch the single row returned.
-    $statement->execute();
-    $rowQuery1 = $statement->fetch();
+    $selectMovieStatement->execute();
+    $rowQuery1 = $selectMovieStatement->fetch();
 
     //Build our second query for the reviews.
-    $query2 = "SELECT * FROM review WHERE movie_id = :id";
-    $selectStatement = $db->prepare($query2);
-    $selectStatement->bindValue(':id', $id, PDO::PARAM_INT);
+    $querySelectReview = "SELECT * FROM review WHERE movie_id = :id";
+    $selectReviewStatement = $db->prepare($querySelectReview);
+    $selectReviewStatement->bindValue(':id', $id, PDO::PARAM_INT);
 
     // Execute the SELECT and fetch the single row returned.
-    $selectStatement->execute();
+    $selectReviewStatement->execute();
 
 
 ?>
@@ -68,7 +68,7 @@
             </div>
         </div>
     </nav> 
-
+<main class="bg-info" style="height: 100vh;">
     <div class="container">
         <div class="panel panel-primary">
             <div class="panel-heading">
@@ -83,20 +83,36 @@
         </div>
     </div>
     <div class="list-group">
-            
-    <?php while($rowQuery2 = $selectStatement->fetch()): ?>
-        <a class="list-group-item list-group-item-action" aria-current="true">
-        <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1"><?= $rowQuery2['author'] ?></h5>
-            <p class="mb-1"><?= $rowQuery2['content'] ?></p>
-            <small><?= $rowQuery2['date'] ?></small>
-            <?php $userId = $rowQuery2['user_id']; if($_SESSION['user_id'] == $rowQuery2['user_id']): ?>
-                <a href="edit.php?id=<?= $rowQuery2['review_id'] ?>" class="btn btn-info">Edit</a>
-            <?php elseif($_SESSION['username'] == "admin"): ?>
-                <a href="edit.php?id=<?= $rowQuery2['review_id'] ?>" class="btn btn-info">Edit</a>
-            <?php endif ?>
-        </div>    
-    <?php endwhile ?>
+        <div class="container">
+            <div class="row row-cols-1 row-cols-md-3">
+                <?php while($rowQuery2 = $selectReviewStatement->fetch()): ?>
+                    <?php $user_id = $rowQuery2['user_id']; 
+                        //Build the third statement for profile pictures
+                        $querySelectImage = "SELECT * FROM profileimage WHERE user_id = :user_id";
+                        $selectImageStatement = $db->prepare($querySelectImage);
+                        $selectImageStatement->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+                        $selectImageStatement->execute(); ?>
+                    <?php while($rowQuery3 = $selectImageStatement->fetch()):?>
+                        <div class="col">
+                            <div class="card mt-5 ms-5 bg-danger text-black border-light" style="width: 18rem; height: 100%" id="card-git">
+                                <img class="card-img-top" src="uploads/<?=$rowQuery3['image_name']?>" alt="Card image cap">
+                                <div class="card-body">
+                                    <h5 class="card-title fs-3"><?= $rowQuery2['author'] ?></h5>
+                                        <p class="card-text text-light fs-5"><?=$rowQuery2['content']?></p>
+                                        <?php $userId = $rowQuery2['user_id']; if($_SESSION['user_id'] == $rowQuery2['user_id']): ?>
+                                            <a href="edit.php?id=<?= $rowQuery2['review_id'] ?>" class="btn btn-success">Edit</a>
+                                        <?php elseif($_SESSION['username'] == "admin"): ?>
+                                            <a href="edit.php?id=<?= $rowQuery2['review_id'] ?>" class="btn btn-success">Edit</a>
+                                        <?php endif ?>
+                                </div>
+                                </div>
+                            </div>
+                    <?php endwhile ?>
+                <?php endwhile ?>
+            </div>
+        </div>
+      </div>
+</main>
 
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

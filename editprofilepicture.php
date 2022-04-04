@@ -12,14 +12,16 @@
     $imageRow = $findImageStatement->fetch();
 
     //If submitted, run the file upload function
-    if(isset($_POST['submit'])){
+    if(isset($_POST['submit']))
+    {
         $image = $_FILES['image']['name'];
         file_upload_path($image);        
     }
 
     $image_upload_detected = isset($_FILES['image']) && ($_FILES['image']['error'] === 0);
     // If an image upload is detected, store the file name and temporary image path
-    if ($image_upload_detected) {
+    if ($image_upload_detected) 
+    {
          $image_filename       = $_FILES['image']['name'];
          $temporary_image_path = $_FILES['image']['tmp_name'];
          $new_image_path       = file_upload_path($image_filename);
@@ -38,28 +40,30 @@
             
             move_uploaded_file($temporary_image_path, $new_image_path);
 
-            resizeImage($image_filename);
+            resizeImage($new_image_path);
             $redirect = "Location: editprofilepicture.php?id=".$user_id;
 
             header($redirect);
          }
          else
          {
-             $uploadError = "Only file types GIF, JPG, JPEG, PNG are allowed.";
+             $uploadError = "Only file types JPG, JPEG, PNG are allowed.";
          }
     }
 
     //Takes in the original file name, and the upload folder name, and moves it to the upload floder.
-    function file_upload_path($original_filename, $upload_subfolder_name = 'uploads') {
+    function file_upload_path($original_filename, $upload_subfolder_name = 'uploads') 
+    {
         $current_folder = dirname(__FILE__);
         $path_segments = [$current_folder, $upload_subfolder_name, basename($original_filename)];
         return join(DIRECTORY_SEPARATOR, $path_segments);
     }
 
     //Checks for imageness
-    function file_is_an_image($temporary_path, $new_path) {
-        $allowed_mime_types      = ['image/gif', 'image/jpeg', 'image/png'];
-        $allowed_file_extensions = ['gif', 'jpg', 'jpeg', 'png'];
+    function file_is_an_image($temporary_path, $new_path) 
+    {
+        $allowed_mime_types      = ['image/jpeg', 'image/png'];
+        $allowed_file_extensions = ['jpg', 'jpeg', 'png'];
 
         $actual_file_extension   = pathinfo($new_path, PATHINFO_EXTENSION);
         $actual_mime_type        = getimagesize($temporary_path)['mime'];
@@ -70,17 +74,36 @@
         return $file_extension_is_valid && $mime_type_is_valid;
     }
 
-    function resizeImage($file){
-        if(file_exists($file)){
-            $originalImage = imagecreatefromjpeg($file);
-            $newImage = imagecreatetruecolor(200, 200);
+    function resizeImage($file)
+    {
+        $imageType = $_FILES['image']['type'];
+        
+        if(file_exists($file))
+        {
+            if($imageType = "image/jpeg")
+            {
+                $originalImage = imagecreatefromjpeg($file);
+                $newImage = imagecreatetruecolor(200, 200);
 
-            //Resolution
-            $originalWidth = imagesx($originalImage);
-            $originalHeight = imagesy($originalImage);
+                //Resolution
+                $originalWidth = imagesx($originalImage);
+                $originalHeight = imagesy($originalImage);
 
-            imagecopyresampled($newImage, $originalImage,0,0,0,0,200,200,$originalWidth,$originalHeight);
-            imagejpeg($newImage,$file,100);
+                imagecopyresampled($newImage, $originalImage,0,0,0,0,200,200,$originalWidth,$originalHeight);
+                imagejpeg($newImage,$file,100);
+            }
+            elseif($imageType = "image/png")
+            {
+                $originalImage = imagecreatefrompng($file);
+                $newImage = imagecreatetruecolor(200, 200);
+
+                //Resolution
+                $originalWidth = imagesx($originalImage);
+                $originalHeight = imagesy($originalImage);
+
+                imagecopyresampled($newImage, $originalImage,0,0,0,0,200,200,$originalWidth,$originalHeight);
+                imagepng($newImage,$file,100);
+            }
         }
     }
 
