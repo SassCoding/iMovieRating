@@ -37,7 +37,12 @@ $statement->execute();
             <div class="collapse navbar-collapse" id="navmenu">
                 <ul class="navbar-nav ms-auto">
                     <?php if($_SESSION['username']): ?>
-                        <p class="text-light">Hello, <?= $_SESSION['username'] ?></p>
+                        <li class="nav-item">
+                            <h5 class="text-light">Hello, <?= $_SESSION['username'] ?></h5>
+                        </li>
+                        <li class="nav-item">
+                            <a href="userpanel.php?id=<?= $_SESSION['user_id'] ?>" class="nav-link">User Settings</a>
+                        </li>
                         <li class="nav-item">
                             <a href="logout.php" class="nav-link">Logout</a>
                         </li>
@@ -51,10 +56,13 @@ $statement->execute();
                             <a href="adminpanel.php" class="nav-link">Admin Panel</a>
                         </li>
                     <?php endif ?>
+                    <li class="nav-item">
+                        <input class = "search" type="text">
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="btn btn-danger">Search</button>
+                    </li>
                 </ul>
-                <input class = "search" type="text">
-                <button type="button" class="btn btn-danger">Search</button>
-                <button type="button" class="btn btn-danger">Enter a Movie</button>
             </div>
         </div>
     </nav> 

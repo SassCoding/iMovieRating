@@ -4,7 +4,8 @@
 
     $_SESSION;
 
-
+    if($_SERVER["REQUEST_METHOD"] == "POST")
+    {
         if($_POST && !empty($_POST['username']) && !empty($_POST['password']))
         {
             //Filter login information from the user.
@@ -16,9 +17,11 @@
             $selectStatement = $db->prepare($selectQuery);
             $selectStatement->bindParam(':user_name', $username);
             $selectStatement->execute();
-            $selectRow = $selectStatement->fetch();     
+            $selectRow = $selectStatement->fetch();   
+            
+            $validPassword = password_verify($password, $selectRow['password']);
 
-            if($password == $selectRow['password']){
+            if($validPassword){
                 $_SESSION["username"] = $selectRow["user_name"];
                 $_SESSION["password"] = $selectRow["password"];
                 $_SESSION["user_id"] = $selectRow["user_id"];
@@ -35,6 +38,7 @@
         if($_POST && empty($_POST['password'])){
             $passwordError = "Please enter a valid password.";
         }
+    }
     
 ?>
 
@@ -49,7 +53,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="style.css">
     
-    <title>iMovieRatings | Sign-Up</title>
+    <title>iMovieRatings | Login</title>
 
 </head>
 <body>

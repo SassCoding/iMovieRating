@@ -11,27 +11,35 @@
             $password = $_POST['password'];
             $passwordConfirm = filter_input(INPUT_POST, 'passwordConfirm', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $email = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
-
-            //Check for duplicate users in our database.
-            // $selectQuery = "SELECT count(*) as total from user WHERE email = '$email' OR user_name = '$username'";
-            // $selectStatement = $db->prepare($selectQuery);
-            // $selectStatement->bindValue(':username', $username);
-            // $selectStatement->bindValue(':email', $email);
-            // $selectStatement->execute();
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
             // If passwords match, exectue the database insert of the new user.
             if($_POST['password'] == $_POST['passwordConfirm'])
             {
-                $hashedPassword = $password;
+                //Inserts the new user into the user table
                 $insertQuery = "INSERT INTO user (user_name, password, email) VALUES (:username, :password, :email)";
-
                 $insertStatement = $db->prepare($insertQuery);
-
                 $insertStatement->bindValue(':username', $username);
                 $insertStatement->bindValue(':password', $hashedPassword);
                 $insertStatement->bindValue(':email', $email);
-    
                 $insertStatement->execute();
+
+                $selectQuery = "SELECT * FROM user WHERE user_name = :user_name";
+                $selectStatement = $db->prepare($selectQuery);
+                $selectStatement->bindValue(':user_name', $username);
+                $selectStatement->execute();
+                $selectRow = $selectStatement->fetch();
+
+                $userid = $selectRow['user_id'];
+                $image_name = "default.png";
+
+                //Sets the new users current profile picture to default
+                $profileImageQuery = "INSERT INTO profileimage (user_id, image_name) VALUES (:user_id, :image_name)";
+                $profileImageStatement = $db->prepare($profileImageQuery);
+                $profileImageStatement->bindValue(':user_id', $userid);
+                $profileImageStatement->bindValue(':image_name', $image_name);
+                $profileImageStatement->execute();
+
                 header('Location: index.php');
             }
             else
