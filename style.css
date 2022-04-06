@@ -3,9 +3,9 @@
     font-family: 'Dosis', serif;
 }
 
-.container-2{
+#movies{
     background: linear-gradient(to bottom,#f83600,#fe8c00);
-    height: 100vh;
+    height: 100%;
     border: 3px solid white;
 }
 

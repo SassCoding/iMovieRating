@@ -140,7 +140,7 @@
                 <div class="container">
                     <form class="form_horizontal" method="post">
                         <div class="form_icon">
-                            <i class="fa fa-user-circle"></i>
+                            <img src="uploads/<?=$_SESSION['image_name']?>">
                         </div>
                             <h3 class="title">Edit User</h3>
                             <div class="form-group">

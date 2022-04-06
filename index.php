@@ -4,7 +4,7 @@ require('connect.php');
 session_start();
 $_SESSION;
 
-$query = "SELECT * FROM movie WHERE category_id = 1";
+$query = "SELECT * FROM movie";
 
 $statement = $db->prepare($query);
 $statement->execute();
@@ -68,13 +68,12 @@ $statement->execute();
     </nav> 
     
     <section class="bg-dark text-dark p-5 text-left">
-    <div class="container-2">
+    <div class="container" id="movies">
         <h3>Most Popular Movies Right Now</h3>
         <div class="row">            
-            
         <?php while($row = $statement->fetch()): ?>
-                <div class="col-4">
-                    <div class="card">
+                <div class="col">
+                    <div class="card" style="width: 15rem;">
                         <img src="images/starwars.png" alt="Star Wars" class="card-img-top">
                         <starwars></starwars>
                         <div class="card-body">
@@ -84,8 +83,7 @@ $statement->execute();
                         </div>
                     </div>
                 </div>
-            <?php endwhile ?>
-            
+            <?php endwhile ?>            
         </div>
     </div>
     </section>

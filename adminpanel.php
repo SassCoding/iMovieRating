@@ -2,7 +2,6 @@
     session_start();
     require('connect.php');
 
-    /*Build select query*/
     $selectQuery = "SELECT * FROM user";
     $selectStatement = $db->prepare($selectQuery);
     $selectStatement->execute();

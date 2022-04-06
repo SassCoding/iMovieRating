@@ -39,7 +39,7 @@
             $row = $modifyStatement->fetch();
             
             move_uploaded_file($temporary_image_path, $new_image_path);
-
+            $_SESSION['image_name'] = $image_filename;
             resizeImage($new_image_path);
             $redirect = "Location: editprofilepicture.php?id=".$user_id;
 
@@ -49,6 +49,25 @@
          {
              $uploadError = "Only file types JPG, JPEG, PNG are allowed.";
          }
+    }
+
+    //Query to delete profile picture.
+    //This query modifies the image_name value of the profile picture table to the default image.
+    if(isset($_POST['updateImage'])){
+        $updateQuery = "UPDATE profileimage SET image_name = 'default.png' WHERE user_id = :user_id";
+        $updateStatement = $db->prepare($updateQuery);
+        $updateStatement->bindValue(':user_id', $_SESSION['user_id']);
+        $updateStatement->execute();
+
+        //Delete the users current image from the uploads folder
+        $unlinkPath = "uploads/".$_SESSION['image_name'];
+        unlink($unlinkPath);
+
+        //Update the session variable of the currently logged in user
+        $_SESSION['image_name'] = "default.jpeg";
+
+        header("Location: editprofilepicture.php?id=".$_SESSION['user_id']);
+        exit;
     }
 
     //Takes in the original file name, and the upload folder name, and moves it to the upload floder.
@@ -171,7 +190,7 @@
                 <div class="container">
                     <form class="form_horizontal" method="post" enctype="multipart/form-data">
                         <div class="form_icon">
-                            <img src="uploads/<?= $imageRow['image_name']?>">
+                            <img src="uploads/<?= $_SESSION['image_name']?>">
                         </div>
                             <h3 class="title">Edit User</h3>
                             <div class="form-group">
@@ -184,6 +203,7 @@
                                 <?php if ($_POST): ?>
                                     <h1><?= print_r($_FILES) ?></h1>
                                 <?php endif ?>
+                                <input type="submit" name="updateImage" value="Delete Image" onclick="return confirm('Are you sure you wish to delete your profile image?')" />
                             </div>
                     </form>
                 </div>

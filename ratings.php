@@ -59,7 +59,7 @@
                         <a href="login.php" class="nav-link">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#logout" class="nav-link">Logout</a>
+                        <a href="logout.php" class="nav-link">Logout</a>
                     </li>
                 </ul>
                 <input class = "search" type="text">
@@ -78,7 +78,13 @@
             <?= $rowQuery1['description'] ?>
             </div>
             <div class="panel-footer">
-                <a href="create.php" class="btn btn-dark">Create Review</a>
+                <?php if($_SESSION): ?>
+                    <a href="create.php" class="btn btn-dark">Create Review</a>
+                <?php endif ?>
+                <?php if(!$_SESSION): ?>
+                    <a href="login.php" class="btn btn-dark">Login to Review</a>
+                <?php endif ?>
+
             </div>
         </div>
     </div>

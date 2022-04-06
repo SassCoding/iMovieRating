@@ -18,6 +18,16 @@
             $selectStatement->bindParam(':user_name', $username);
             $selectStatement->execute();
             $selectRow = $selectStatement->fetch();   
+
+            $user_id = $selectRow['user_id'];
+
+            //Create select query to get the users profile image value
+            //and store it in a session variable
+            $findImageQuery = "SELECT * FROM profileimage WHERE user_id = :user_id";
+            $findImageStatement = $db->prepare($findImageQuery);
+            $findImageStatement->bindValue(':user_id', $user_id);
+            $findImageStatement->execute();
+            $imageRow = $findImageStatement->fetch();
             
             $validPassword = password_verify($password, $selectRow['password']);
 
@@ -25,6 +35,7 @@
                 $_SESSION["username"] = $selectRow["user_name"];
                 $_SESSION["password"] = $selectRow["password"];
                 $_SESSION["user_id"] = $selectRow["user_id"];
+                $_SESSION["image_name"] = $imageRow["image_name"];
 
                 header("Location: index.php");
             }

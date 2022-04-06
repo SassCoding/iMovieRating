@@ -2,8 +2,7 @@
     session_start();
     require('connect.php');
 
-    // Select the user to be edited using GET from url.
-    
+    // Select the user to be edited using GET from url.    
         $userID = $_GET['id'];
     
         $selectQuery = "SELECT * FROM user WHERE user_id = :user_id";
