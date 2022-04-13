@@ -1,8 +1,10 @@
 <?php
 
 session_start();
-unset($_SESSION['username']);
-unset($_SESSION['password']);
+$_SESSION["username"] = null;
+$_SESSION["password"] = null;
+$_SESSION["user_id"] = null;
+$_SESSION["image_name"] = null;
 header("location: index.php");
 
 ?>

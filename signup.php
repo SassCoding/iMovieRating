@@ -31,7 +31,7 @@
                 $selectRow = $selectStatement->fetch();
 
                 $userid = $selectRow['user_id'];
-                $image_name = "default.png";
+                $image_name = "default.jpeg";
 
                 //Sets the new users current profile picture to default
                 $profileImageQuery = "INSERT INTO profileimage (user_id, image_name) VALUES (:user_id, :image_name)";
@@ -147,6 +147,8 @@
                                     <p class="fs-5"><?= $emailError ?><p>
                                 <?php endif ?>
                             </div>
+                            <input type="text" id="captcha" name="captcha"></input>
+                            <img id="captcha_image" src="captcha.php" alt="Captcha">
                                 <input class ="btn signin bg-light text-danger" type="submit" name="login" value="Create Account">
                                 
                             </div>
