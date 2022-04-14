@@ -74,7 +74,7 @@
             return $file_extension_is_valid && $mime_type_is_valid;
         }  
         
-        if($_SERVER["REQUEST_METHOD"] == "POST")
+        if(!empty($_POST['search']))
         {
             $_SESSION['searchterm'] = $_POST['search'];
             header("location: search.php");

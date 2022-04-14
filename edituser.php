@@ -49,7 +49,12 @@
 				header("Location: adminpanel.php");
 				exit;
 			}
-		}     
+		}  
+		if(!empty($_POST['search']))
+		{
+		  $_SESSION['searchterm'] = $_POST['search'];
+		  header("location: search.php");
+		}   
 ?>
 
 <!DOCTYPE html>

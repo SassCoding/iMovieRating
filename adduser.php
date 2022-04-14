@@ -6,21 +6,27 @@
     {
       if($_POST && !empty($_POST['username']) && !empty($_POST['password']) && !empty($_POST['passwordConfirm']) && !empty($_POST['email']))
         { 
-          // Filter and set variables.
-          $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-          $password = $_POST['password'];
-          $passwordConfirm = filter_input(INPUT_POST, 'passwordConfirm', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-          $email = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
+          // Filter, Saniitize and set variables.
+          $hasErrors = false;
+          $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_SPECIAL_CHARS);
+          $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_SPECIAL_CHARS);
+          $passwordConfirm = filter_input(INPUT_POST, 'passwordConfirm', FILTER_SANITIZE_SPECIAL_CHARS);
+          $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+          
+          if(!filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL))
+          {
+            $hasErrors = true;
+            $emailError = "Email was invalid, please try again.";
+          }
 
-          //Check for duplicate users in our database.
-          // $selectQuery = "SELECT count(*) as total from user WHERE email = '$email' OR user_name = '$username'";
-          // $selectStatement = $db->prepare($selectQuery);
-          // $selectStatement->bindValue(':username', $username);
-          // $selectStatement->bindValue(':email', $email);
-          // $selectStatement->execute();
+          if($password != $passwordConfirm)
+          {
+            $hasErrors = true;
+            $passwordError = "Passwords did not match. Please try again.";
+          }
 
           // If passwords match, exectue the database insert of the new user.
-          if($_POST['password'] == $_POST['passwordConfirm'])
+          if(!$hasErrors)
           {
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             $insertQuery = "INSERT INTO user (user_name, password, email) VALUES (:username, :password, :email)";
@@ -36,28 +42,28 @@
           }
           else
           {
-            $passwordConfirmationError = "Passwords didnt match";
+            $passwordConfirmationError = "Passwords did not match. Please try again.";
           }
         }
         if(empty($_POST['username']))
         {
-          $userNameError = "Please enter a valid user name.";
+          $userNameError = "Please enter a user name.";
         }
         if(empty($_POST['password']))
         {
-          $passwordError = "Please enter a valid password.";
+          $passwordError = "Please enter a password.";
         }
         if(empty($_POST['passwordConfirm']))
         {
-          $passwordConfirmationError = "Please enter a valid password.";
+          $passwordConfirmationError = "Please enter a password matching the previous.";
         }   
         if(empty($_POST['email']))
         {
-          $emailError = "Please enter a valid E-Mail";
+          $emailError = "Please enter an E-Mail";
         }
     }
 
-    if($_SERVER["REQUEST_METHOD"] == "POST")
+    if(!empty($_POST['search']))
     {
 	    $_SESSION['searchterm'] = $_POST['search'];
 	    header("location: search.php");

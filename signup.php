@@ -14,15 +14,32 @@
           }
           else
           {
-            // Filter and set variables.
-            $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            $password = $_POST['password'];
-            $passwordConfirm = filter_input(INPUT_POST, 'passwordConfirm', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            $email = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
+            // Filter, Saniitize and set variables.
+            $hasErrors = false;
+            $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_SPECIAL_CHARS);
+            $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_SPECIAL_CHARS);
+            $passwordConfirm = filter_input(INPUT_POST, 'passwordConfirm', FILTER_SANITIZE_SPECIAL_CHARS);
+            $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+            
+            //Hash password
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        
-            // If passwords match, exectue the database insert of the new user.
-            if($_POST['password'] == $_POST['passwordConfirm'])
+            
+            //Validate Email
+            if(!filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL))
+            {
+              $hasErrors = true;
+              $emailError = "Email was invalid, please try again.";
+            }
+
+            //Confirm passwords match
+            if($password != $passwordConfirm)
+            {
+              $hasErrors = true;
+              $passwordError = "Passwords did not match. Please try again.";
+            }
+
+            // If no errors, exectue the database insert of the new user.
+            if(!$hasErrors)
             {
               //Inserts the new user into the user table
               $insertQuery = "INSERT INTO user (user_name, password, email) VALUES (:username, :password, :email)";
@@ -47,10 +64,11 @@
               $profileImageStatement->bindValue(':user_id', $userid);
               $profileImageStatement->bindValue(':image_name', $image_name);
               $profileImageStatement->execute();
-            
-              header('Location: index.php');
+              
               $_SESSION['attemptedUsername'] = "";
               $_SESSION['attemptedEmail'] = "";
+              
+              header('Location: index.php');
               }
               else
               {
@@ -58,19 +76,23 @@
               }
           }         
         }
-        if(empty($_POST['username'])){
-            $userNameError = "Please enter a valid user name.";
-          }
-          if(empty($_POST['password'])){
-            $passwordError = "Please enter a valid password.";
-          }
-          if(empty($_POST['passwordConfirm'])){
-            $passwordConfirmationError = "Please enter a valid password.";
-          }   
-          if(empty($_POST['email'])){
-            $emailError = "Please enter a valid E-Mail";
-          }
+        if(empty($_POST['username']))
+        {
+          $userNameError = "Please enter a user name.";
         }
+        if(empty($_POST['password']))
+        {
+          $passwordError = "Please enter a password.";
+        }
+        if(empty($_POST['passwordConfirm']))
+        {
+          $passwordConfirmationError = "Please enter a password matching the previous.";
+        }   
+        if(empty($_POST['email']))
+        {
+          $emailError = "Please enter an E-Mail";
+        }
+    }
 
         if($_SERVER["REQUEST_METHOD"] == "POST")
         {
