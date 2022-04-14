@@ -1,28 +1,21 @@
 <?php
-require('connect.php');
+    session_start();
+    require('connect.php');
 
-session_start();
-$_SESSION;
+    $searchTerm = $_SESSION['searchterm'];
+    $searchQuery = "SELECT * FROM movie WHERE movie_name LIKE '%' :term '%'";
+    $searchStatement = $db->prepare($searchQuery);
+    $searchStatement->bindParam(':term', $searchTerm);
+    $searchStatement->execute();
+    $results = $searchStatement->fetchAll(); 
 
-$counter = 0;
-
-$statement = "SELECT category_id, category_name FROM category;";
-$statement = $db->prepare($statement);
-$statement->execute();
-$categories = $statement->fetchAll();
-
-$statement = "SELECT * FROM movie ORDER BY rand()";
-$statement = $db->prepare($statement);
-$statement->execute();
-$movies = $statement->fetchAll();
-
-if($_SERVER["REQUEST_METHOD"] == "POST")
-{
-	$_SESSION['searchterm'] = $_POST['search'];
-	header("location: search.php");
-}
-
+    if($_SERVER["REQUEST_METHOD"] == "POST")
+    {
+	    $_SESSION['searchterm'] = $_POST['search'];
+	    header("location: search.php");
+    }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,45 +27,42 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
 
 </head>
 <body class="bg-dark">
-	<?php include 'nav.php'?>
+    <?php include('nav.php')?>
     <section class="bg-dark text-dark p-5 text-left">
-    	<div class="container" id="movies">
-				<div class="row">
-        	<h1 class="text-center text-light">Welcome to iMovieRatings - Select a category of movies!</h1>
-					<?php foreach ($categories as $category) : ?>
-						<?php $counter = 0 ?>
-						<div>
-							<a class ="text-dark text-center" href="category.php?id=<?=$category['category_id']?>"><h1 id="category-head"><?= $category['category_name'] ?></h1></a>
-            </div>
-            <?php foreach ($movies as $movie) : ?>
-							<?php if($category['category_id'] === $movie['category_id'] && $counter < 3) : ?>
-								<div class="col">
-									<div class="card" style="width: 15rem; height: 40rem;">
-										<img src="images/starwars.png" alt="Star Wars" class="card-img-top mt-5">
-										<div class="card-body">
-											<h5 class="card-title text-danger" style="font-weight: bolder;"><?= $movie['movie_name']?></h5>
-											<p class="card-text"><?= $movie['description'] ?></p>
-											<a href="ratings.php?id=<?= $movie['movie_id'] ?>" class="btn btn-primary">View Ratings and Reviews</a>
-										</div>
-									</div>
-								</div>
-								<?php $counter++?>
-							<?php endif ?>
-						<?php endforeach ?>  
-					<?php endforeach ?>            
+      <div class="form_bg">
+        <div class="container">
+          <table class="table table-striped table-dark">
+            <thead>
+              <tr>
+                <th scope="col">Movie Name</th>
+                <th scope="col">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php foreach($results as $result) : ?>
+                <tr>
+                  <td><?= $result['movie_name'] ?></td>
+                  <td><?= $result['description'] ?></td>
+                </tr>
+              <?php endforeach ?>
+            </tbody>
+          </table>
         </div>
-    	</div>
-    </section>
+      </section>
+    
+
 
     <!--Footer-->
     <div class="container bg-dark">
-			<footer class="row row-cols-3 my-4 border-top">
-				<div class="col">
-					<a href="/" class="d-flex align-items-center mb-3 link-dark text-decoration-none">
-						<svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-					</a>
-					<p class="text-muted">&copy; 2022</p>
-				</div>            
+        <footer class="row row-cols-3 my-4 border-top">
+            <div class="col">
+                <a href="/" class="d-flex align-items-center mb-3 link-dark text-decoration-none">
+                    <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+                 </a>
+                <p class="text-muted">&copy; 2022</p>
+            </div>
+    
+            
 
             <div class="col">
             <h5>User Links</h5>

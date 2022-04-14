@@ -23,7 +23,11 @@
     // Execute the SELECT and fetch the single row returned.
     $selectReviewStatement->execute();
 
-
+    if($_SERVER["REQUEST_METHOD"] == "POST")
+    {
+      $_SESSION['searchterm'] = $_POST['search'];
+      header("location: search.php");
+    }
 ?>
 
 <!doctype html>
@@ -36,90 +40,59 @@
     <title>Ratings Page</title>
   </head>
   <body>
-<!-- NavBar -->
-<nav class="navbar navbar-expand-lg bg-dark navbar-dark">
-        <div class="container">
-            <a href="index.php" class="navbar-brand">iMovieRatings</a>
-
-            <button 
-                class="navbar-toggler" 
-                type="button" 
-                data-bs-toggle="collapse" 
-                data-bs-target="#navmenu"
-            >
-             <span class="span-navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navmenu">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a href="index.php" class="nav-link">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="login.php" class="nav-link">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="logout.php" class="nav-link">Logout</a>
-                    </li>
-                </ul>
-                <input class = "search" type="text">
-                <button type="button" class="btn btn-danger">Search</button>
-                <button type="button" class="btn btn-danger">Enter a Movie</button>
-            </div>
-        </div>
-    </nav> 
-<main class="bg-info" style="height: 100vh;">
-    <div class="container">
+    <?php include('nav.php')?>
+    <main class="bg-info" style="height: 100vh;">
+      <div class="container">
         <div class="panel panel-primary">
-            <div class="panel-heading">
-                <h3 class="panel-title"><?= $rowQuery1['movie_name'] ?></h3>
-            </div>
-            <div class="panel-body">
+          <div class="panel-heading">
+            <h3 class="panel-title"><?= $rowQuery1['movie_name'] ?></h3>
+          </div>
+          <div class="panel-body">
             <?= $rowQuery1['description'] ?>
-            </div>
-            <div class="panel-footer">
-                <?php if($_SESSION): ?>
-                    <a href="create.php" class="btn btn-dark">Create Review</a>
-                <?php endif ?>
-                <?php if(!$_SESSION): ?>
-                    <a href="login.php" class="btn btn-dark">Login to Review</a>
-                <?php endif ?>
-
-            </div>
+          </div>
+          <div class="panel-footer">
+            <?php if($_SESSION): ?>
+              <a href="create.php" class="btn btn-dark">Create Review</a>
+            <?php endif ?>
+            <?php if(!$_SESSION): ?>
+              <a href="login.php" class="btn btn-dark">Login to Review</a>
+            <?php endif ?>
+          </div>
         </div>
-    </div>
-    <div class="list-group">
+      </div>
+      <div class="list-group">
         <div class="container">
-            <div class="row row-cols-1 row-cols-md-3">
-                <?php while($rowQuery2 = $selectReviewStatement->fetch()): ?>
-                    <?php $user_id = $rowQuery2['user_id']; 
-                        //Build the third statement for profile pictures
-                        $querySelectImage = "SELECT * FROM profileimage WHERE user_id = :user_id";
-                        $selectImageStatement = $db->prepare($querySelectImage);
-                        $selectImageStatement->bindValue(':user_id', $user_id, PDO::PARAM_INT);
-                        $selectImageStatement->execute(); ?>
-                    <?php while($rowQuery3 = $selectImageStatement->fetch()):?>
-                        <div class="col">
-                            <div class="card mt-5 ms-5 bg-danger text-black border-light" style="width: 18rem; height: 100%" id="card-git">
-                                <img class="card-img-top" src="uploads/<?=$rowQuery3['image_name']?>" alt="Card image cap">
-                                <div class="card-body">
-                                    <h5 class="card-title fs-3"><?= $rowQuery2['author'] ?></h5>
-                                        <p class="card-text text-light fs-5"><?=$rowQuery2['content']?></p>
-                                        <?php $userId = $rowQuery2['user_id']; if($_SESSION['user_id'] == $rowQuery2['user_id']): ?>
-                                            <a href="edit.php?id=<?= $rowQuery2['review_id'] ?>" class="btn btn-success">Edit</a>
-                                        <?php elseif($_SESSION['username'] == "admin"): ?>
-                                            <a href="edit.php?id=<?= $rowQuery2['review_id'] ?>" class="btn btn-success">Edit</a>
-                                        <?php endif ?>
-                                </div>
-                                </div>
-                            </div>
-                    <?php endwhile ?>
-                <?php endwhile ?>
-            </div>
+          <div class="row row-cols-1 row-cols-md-3">
+            <?php while($rowQuery2 = $selectReviewStatement->fetch()): ?>
+              <?php $user_id = $rowQuery2['user_id']; 
+                //Build the third statement for profile pictures
+                $querySelectImage = "SELECT * FROM profileimage WHERE user_id = :user_id";
+                $selectImageStatement = $db->prepare($querySelectImage);
+                $selectImageStatement->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+                $selectImageStatement->execute(); ?>
+              <?php while($rowQuery3 = $selectImageStatement->fetch()):?>
+                <div class="col">
+                  <div class="card mt-5 ms-5 bg-danger text-black border-light" style="width: 18rem; height: 100%" id="card-git">
+                    <img class="card-img-top" src="uploads/<?=$rowQuery3['image_name']?>" alt="Card image cap">
+                    <div class="card-body">
+                      <h5 class="card-title fs-3"><?= $rowQuery2['author'] ?></h5>
+                      <p class="card-text text-light fs-5"><?=$rowQuery2['content']?></p>
+                      <?php $userId = $rowQuery2['user_id']; if($_SESSION['user_id'] == $rowQuery2['user_id']): ?>
+                        <a href="edit.php?id=<?= $rowQuery2['review_id'] ?>" class="btn btn-success">Edit</a>
+                      <?php elseif($_SESSION['username'] == "admin"): ?>
+                        <a href="edit.php?id=<?= $rowQuery2['review_id'] ?>" class="btn btn-success">Edit</a>
+                      <?php endif ?>
+                    </div>
+                  </div>
+                </div>
+              <?php endwhile ?>
+            <?php endwhile ?>
+          </div>
         </div>
       </div>
 </main>
-
+</body>
+</html>
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

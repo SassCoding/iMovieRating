@@ -14,6 +14,12 @@
     $categoryStatement->bindValue(':category_id', $_GET['id']);
     $categoryStatement->execute();
     $categoryRow = $categoryStatement->fetch();
+
+    if($_SERVER["REQUEST_METHOD"] == "POST")
+    {
+	    $_SESSION['searchterm'] = $_POST['search'];
+	    header("location: search.php");
+    }
 ?>
 
 <!DOCTYPE html>
@@ -27,57 +33,26 @@
 
 </head>
 <body class="bg-dark">
-<!-- NavBar -->
-<nav class="navbar navbar-expand-lg bg-dark navbar-dark">
-        <div class="container">
-            <a href="index.php" class="navbar-brand">iMovieRatings</a>
-            <button 
-                class="navbar-toggler" 
-                type="button" 
-                data-bs-toggle="collapse" 
-                data-bs-target="#navmenu"
-            >
-                <span class="span-navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navmenu">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a href="index.php" class="nav-link">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="login.php" class="nav-link">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#logout" class="nav-link">Logout</a>
-                    </li>
-                </ul>
-                <input class = "search" type="text">
-                <button type="button" class="btn btn-danger">Search</button>
-                <button type="button" class="btn btn-danger">Enter a Movie</button>
-            </div>
-        </div>
-    </nav> 
-    
-    <section class="bg-dark text-dark p-5 text-left">
+  <?php include('nav.php') ?>    
+  <section class="bg-dark text-dark p-5 text-left">
     <div class="container" id="movies">
-        <div class="row">
-            <H1 class="fs-1 fw-bold" style="text-align: center;"><?=$categoryRow['category_name'] ?></H1>
-            <?php foreach ($movieRows as $movieRow) : ?>
-                    <div class="col">
-                        <div class="card" style="width: 15rem;">
-                            <img src="images/starwars.png" alt="Star Wars" class="card-img-top">
-                            <div class="card-body">
-                                <h5 class="card-title"><?= $movieRow['movie_name']?></h5>
-                                <p class="card-text"><?= $movieRow['description'] ?></p>
-                                <a href="ratings.php?id=<?= $movieRow['movie_id'] ?>" class="btn btn-primary">View Ratings and Reviews</a>
-                            </div>
-                        </div>
-                    </div>
-            <?php endforeach ?>            
+      <div class="row">
+        <H1 class="fs-1 fw-bold" style="text-align: center;"><?=$categoryRow['category_name'] ?></H1>
+          <?php foreach ($movieRows as $movieRow) : ?>
+            <div class="col">
+              <div class="card" style="width: 15rem;">
+                <img src="images/starwars.png" alt="Star Wars" class="card-img-top">
+                <div class="card-body">
+                  <h5 class="card-title"><?= $movieRow['movie_name']?></h5>
+                  <p class="card-text"><?= $movieRow['description'] ?></p>
+                  <a href="ratings.php?id=<?= $movieRow['movie_id'] ?>" class="btn btn-primary">View Ratings and Reviews</a>
+                </div>
+              </div>
+            </div>
+          <?php endforeach ?>            
         </div>
     </div>
-    </section>
+  </section>
 
     <!--Footer-->
     <div class="container bg-dark">

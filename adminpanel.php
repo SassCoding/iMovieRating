@@ -6,6 +6,12 @@
     $selectStatement = $db->prepare($selectQuery);
     $selectStatement->execute();
     $selectStatement->fetch();
+
+    if($_SERVER["REQUEST_METHOD"] == "POST")
+    {
+	    $_SESSION['searchterm'] = $_POST['search'];
+	    header("location: search.php");
+    }
 ?>
 
 <!DOCTYPE html>
@@ -21,69 +27,37 @@
     <title>iMovieRatings | Admin Panel</title>
 
 </head>
+
 <body>
-
-<!-- NavBar -->
-    <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
-        <div class="container">
-            <a href="index.php" class="navbar-brand">iMovieRatings</a>
-            <button 
-                class="navbar-toggler" 
-                type="button" 
-                data-bs-toggle="collapse" 
-                data-bs-target="#navmenu"
-            >
-                <span class="span-navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navmenu">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a href="index.php" class="nav-link">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="login.php" class="nav-link">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#logout" class="nav-link">Logout</a>
-                    </li>
-                </ul>
-                <input class = "search" type="text">
-                <button type="button" class="btn btn-danger">Search</button>
-                <button type="button" class="btn btn-danger">Enter a Movie</button>
-            </div>
-        </div>
-    </nav> 
+  <?php include('nav.php') ?>
     <main>
-        <section class="bg-dark text-dark p-5 text-left">
-            <div class="form_bg">
-                <div class="container">
-                <table class="table table-striped table-dark">
-                    <thead>
-                        <tr>
-                            <th scope="col">User ID</th>
-                            <th scope="col">Username</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Modify</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php while($selectRow = $selectStatement->fetch()): ?>
-                            <tr>
-                                <th scope="row" name="user_id"><?= $selectRow['user_id'] ?></th>
-                                <td><?= $selectRow['user_name'] ?></td>
-                                <td><?= $selectRow['email'] ?></td>
-                                <td>
-                                <a href="edituser.php?id=<?= $selectRow['user_id'] ?>" class="btn btn-info">Edit</a>
-                            </tr>
-                        <?php endwhile ?>
-                    </tbody>
-                </table>
-                <a href="adduser.php" class="btn btn-success">Add User</a>
-            </div>
-        </section>
-
+      <section class="bg-dark text-dark p-5 text-left">
+      <div class="form_bg">
+        <div class="container">
+          <table class="table table-striped table-dark">
+            <thead>
+              <tr>
+                <th scope="col">User ID</th>
+                <th scope="col">Username</th>
+                <th scope="col">Email</th>
+                <th scope="col">Modify</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php while($selectRow = $selectStatement->fetch()): ?>
+                <tr>
+                  <th scope="row" name="user_id"><?= $selectRow['user_id'] ?></th>
+                    <td><?= $selectRow['user_name'] ?></td>
+                    <td><?= $selectRow['email'] ?></td>
+                    <a href="edituser.php?id=<?= $selectRow['user_id'] ?>" class="btn btn-info">Edit</a>  
+                </tr>
+              <?php endwhile ?>
+            </tbody>
+          </table>
+          <a href="adduser.php" class="btn btn-success">Add User</a>
+        </div>
+      </section>
     </main>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>
 

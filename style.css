@@ -2,6 +2,13 @@
 *{
     font-family: 'Dosis', serif;
 }
+#footer-tabs:hover{
+    color: white;
+}
+
+#category-head:hover{
+    color: white;
+}
 
 #movies{
     background: linear-gradient(to bottom,#f83600,#fe8c00);
