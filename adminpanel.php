@@ -49,7 +49,9 @@
                   <th scope="row" name="user_id"><?= $selectRow['user_id'] ?></th>
                     <td><?= $selectRow['user_name'] ?></td>
                     <td><?= $selectRow['email'] ?></td>
-                    <a href="edituser.php?id=<?= $selectRow['user_id'] ?>" class="btn btn-info">Edit</a>  
+                    <td>
+                      <a href="edituser.php?id=<?= $selectRow['user_id'] ?>" class="btn btn-info">Edit</a>  
+                    </td>
                 </tr>
               <?php endwhile ?>
             </tbody>
