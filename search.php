@@ -1,7 +1,7 @@
 <?php
     session_start();
     require('connect.php');
-
+    
     $searchTerm = $_SESSION['searchterm'];
     $searchQuery = "SELECT * FROM movie WHERE movie_name LIKE '%' :term '%'";
     $searchStatement = $db->prepare($searchQuery);

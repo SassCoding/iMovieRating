@@ -6,8 +6,10 @@
         $movieId = $_POST['movieId'];
         $redirect = "Location: ratings.php?id=".$movieId;
 
+        //Sanitization
         $review  = filter_input(INPUT_POST, 'content', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $id      = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
+        $id      = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
         // Build the parameterized SQL query and bind to the above sanitized values.
         $query     = "UPDATE review SET content = :content WHERE review_id = :id";
@@ -36,7 +38,8 @@
         header($redirect);
         exit;
     } else if (isset($_GET['id'])){
-        $id= filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+        $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+        $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
         $query = "SELECT * FROM review WHERE review_id = :id";
         $statement = $db->prepare($query);

@@ -3,6 +3,10 @@
     $_SESSION;
     require('connect.php');
 
+    //Sanitize and validate inputs
+    $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+    $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+
     $selectMovie = "SELECT * FROM movie WHERE category_id = :category_id";
     $movieStatement = $db->prepare($selectMovie);
     $movieStatement->bindValue(':category_id', $_GET['id']);
@@ -17,7 +21,8 @@
 
     if($_SERVER["REQUEST_METHOD"] == "POST")
     {
-	    $_SESSION['searchterm'] = $_POST['search'];
+      $searchTerm = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
+	    $_SESSION['searchterm'] = $searchTerm;
 	    header("location: search.php");
     }
 ?>

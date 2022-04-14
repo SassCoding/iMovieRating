@@ -3,7 +3,8 @@
     require('connect.php');
 
     // Select the user to be edited using GET from url.
-        $userID = $_GET['id'];
+        $userID = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        $userID = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
     
         $selectQuery = "SELECT * FROM user WHERE user_id = :user_id";
         $selectStatement = $db->prepare($selectQuery);
@@ -13,10 +14,10 @@
 
         if($_POST && isset($_POST['username']) && isset($_POST['username']))
         {
-            $username = $_POST['username'];
-            $email = $_POST['email'];
+            $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_SPECIAL_CHARS);
+            $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+            $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
             $file = $_FILES['file'];
-            
         
             // Build the parameterized SQL query and bind to the above sanitized values.
             $updateQuery = "UPDATE user SET user_name = :user_name, email = :email WHERE user_id = :user_id";

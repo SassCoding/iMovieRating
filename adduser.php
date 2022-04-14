@@ -68,8 +68,6 @@
 	    $_SESSION['searchterm'] = $_POST['search'];
 	    header("location: search.php");
     }
-
-
 ?>
 
 <!DOCTYPE html>

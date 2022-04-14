@@ -10,7 +10,7 @@
       {
         //Filter login information from the user.
         $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_SPECIAL_CHARS);
-        $password =  trim($_POST['password']);
+        $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_SPECIAL_CHARS);
 
         //Create select query, prepare, execute, and fetch.
         $selectQuery = "SELECT * FROM user WHERE user_name = :user_name";
