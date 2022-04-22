@@ -42,9 +42,9 @@
     <main>
       <section class="bg-dark text-dark p-5 text-left">
         <H2 class="text-white text-center">ADMIN PANEL</H2>
-      <div class="form_bg">
         <div class="container">
-          <table class="table table-striped table-dark">
+          <div class="form_bg">
+          <table class="table table-striped table-light">
             <thead>
               <tr>
                 <th scope="col">User ID</th>
@@ -66,9 +66,9 @@
               <?php endwhile ?>
             </tbody>
           </table>
-          <a href="adduser.php" class="btn btn-success">Add User</a>
         </div>
       </div>
+      <?php include 'footer.php'?>
       </section>
     </main>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>

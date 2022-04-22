@@ -52,13 +52,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
 
     <title>Ratings Page</title>
   </head>
-  <body>
+  
+  <body class="bg-dark" style="height: 100vm;">
     <?php include('nav.php')?>
-    <main class="bg-info" style="height: 100vh;">
-      <div class="container">
+    <main class="mb-1">
+      <div class="container" id="movies">
         <div class="panel panel-primary">
           <div class="panel-heading">
             <h3 class="panel-title"><?= $rowQuery1['movie_name'] ?></h3>
@@ -77,7 +79,8 @@
         </div>
       </div>
       <div class="list-group">
-        <div class="container">
+        <div class="container" id="movies" style="height: 100vh;">
+        <h1 class="text-center"><?= $rowQuery1['movie_name'] ?> Review's</h1>
           <div class="row row-cols-1 row-cols-md-3">
             <?php while($rowQuery2 = $selectReviewStatement->fetch()): ?>
               <?php $user_id = $rowQuery2['user_id']; 
@@ -88,11 +91,11 @@
                 $selectImageStatement->execute(); ?>
               <?php while($rowQuery3 = $selectImageStatement->fetch()):?>
                 <div class="col">
-                  <div class="card mt-5 ms-5 bg-danger text-black border-light" style="width: 18rem; height: 100%">
-                    <img class="card-img-top" src="uploads/<?=$rowQuery3['image_name']?>" alt="Card image cap">
+                  <div class="card mt-5 ms-5 bg-dark text-light border-light" style="width: 18rem; height: 100%">
+                    <img class="card-img-top" src="uploads/<?=$rowQuery3['image_name']?>" styles="width: 200px; height: 200px;" alt="Card image cap">
                     <div class="card-body">
-                      <h5 class="card-title fs-3"><?= $rowQuery2['author'] ?></h5>
-                      <p class="card-text text-light fs-5"><?=$rowQuery2['content']?></p>
+                      <h5 class="card-title fs-3 text-center"><?= $rowQuery2['author'] ?></h5>
+                      <p class="card-text text-light fs-5 text-center"><?=$rowQuery2['content']?></p>
                       <?php $userId = $rowQuery2['user_id']; if($_SESSION['user_id'] == $rowQuery2['user_id']): ?>
                         <a href="edit.php?id=<?= $rowQuery2['review_id'] ?>" class="btn btn-success">Edit</a>
                       <?php elseif($_SESSION['username'] == "admin"): ?>
