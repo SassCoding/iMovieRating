@@ -2,60 +2,77 @@
     session_start();
     require('connect.php');
 
-    // Select the user to be edited using GET from url. 
-	$userID = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
-    $userID = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);   
+
+    //Sanatize the ID
+    $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+    $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
     
-		$selectQuery = "SELECT * FROM user WHERE user_id = :user_id";
-		$selectStatement = $db->prepare($selectQuery);
-		$selectStatement->bindValue(':user_id', $userID);
-		$selectStatement->execute();
-		$row = $selectStatement->fetch();
+    if(!filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT) || !filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT))
+    {
+      header("location: index.php");
+    }  
+       
+	// Select the user to be edited using GET from url. 
+	$selectQuery = "SELECT * FROM user WHERE user_id = :user_id";
+	$selectStatement = $db->prepare($selectQuery);
+	$selectStatement->bindValue(':user_id', $id);
+	$selectStatement->execute();
+	$row = $selectStatement->fetch();
 
-		if($_POST)
+	if($_POST)
+	{
+		$username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_SPECIAL_CHARS);
+		$password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_SPECIAL_CHARS);
+		$email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+		
+		// Build the parameterized SQL query and bind to the above sanitized values.
+		$updateQuery = "UPDATE user SET user_name = :user_name, email = :email, password = :password WHERE user_id = :user_id";
+		$updateStatement = $db->prepare($updateQuery);
+		$updateStatement->bindValue(':user_name', $username);  
+		$updateStatement->bindValue(':email', $email);
+		$updateStatement->bindValue(':password', $password); 
+		$updateStatement->bindValue(':user_id', $id); 
+
+		$modifyCommand = $_POST['modifyCommand'];
+			
+		if($modifyCommand)
 		{
-			$username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_SPECIAL_CHARS);
-            $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_SPECIAL_CHARS);
-            $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+			$updateStatement->execute();
+
+			header("Location: adminpanel.php");
+			exit;
+		}
+
+		// Delete the selected user
+		$deleteQuery = "DELETE FROM user WHERE user_id = :user_id";
+		$deleteStatement = $db->prepare($deleteQuery);
+		$deleteStatement->bindValue(':user_id', $userID);
+
+		$deleteCommand = $_POST['deleteCommand'];
 			
-			// Build the parameterized SQL query and bind to the above sanitized values.
-			$updateQuery = "UPDATE user SET user_name = :user_name, email = :email, password = :password WHERE user_id = :user_id";
-			$updateStatement = $db->prepare($updateQuery);
-			$updateStatement->bindValue(':user_name', $username);  
-			$updateStatement->bindValue(':email', $email);
-			$updateStatement->bindValue(':password', $password); 
-			$updateStatement->bindValue(':user_id', $userID); 
-
-			$modifyCommand = $_POST['modifyCommand'];
-			
-			if($modifyCommand)
-			{
-				$updateStatement->execute();
-
-				header("Location: adminpanel.php");
-				exit;
-			}
-
-			// Delete the selected user
-			$deleteQuery = "DELETE FROM user WHERE user_id = :user_id";
-			$deleteStatement = $db->prepare($deleteQuery);
-			$deleteStatement->bindValue(':user_id', $userID);
-
-			$deleteCommand = $_POST['deleteCommand'];
-			
-			if($deleteCommand)
-			{
-				$deleteStatement->execute();
-
-				header("Location: adminpanel.php");
-				exit;
-			}
-		}  
-		if(!empty($_POST['search']))
+		if($deleteCommand)
 		{
-		  $_SESSION['searchterm'] = $_POST['search'];
-		  header("location: search.php");
-		}   
+			$deleteStatement->execute();
+
+			header("Location: adminpanel.php");
+			exit;
+		}
+	}  
+	
+	if(!empty($_POST['search']))
+	{
+		$searchTerm = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
+      
+		if(!filter_input(INPUT_POST, 'search', FILTER_SANITIZE_SPECIAL_CHARS))
+		{
+			header("location: index.php");
+		}
+		else
+		{
+			$_SESSION['searchterm'] = $searchTerm;
+			header("location: search.php");
+		}
+	}   
 ?>
 
 <!DOCTYPE html>
@@ -83,8 +100,8 @@
 						</div>
 						<h3 class="title">Edit User</h3>
 						<div class="form-group">
-							<label class="fs-3" for="Username">Edit Username</label>
-							<input type="text" class="form-control" name="username" type="text" value="<?=$row['user_name']?>">
+							<label class="fs-3" >Edit Username</label>
+							<input type="text" class="form-control" name="username" value="<?=$row['user_name']?>">
 						</div>
 						<div class="form-group">
 							<h2>Edit Password</h2>
@@ -103,16 +120,13 @@
 							class ="btn signin bg-danger text-light" 
 							name="deleteCommand" 
 							type="submit" 
-							name="login" 
 							value="Delete"
 							onclick="return confirm('Are you sure you wish to delete this post?')"
-						>
-					</div>
-				</div>          
-			</form>
-		</div>
-	</div>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-</section>
-</main>
+						>         
+					</form>
+				</div>
+			</div>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+		</section>
+	</main>
 </body>

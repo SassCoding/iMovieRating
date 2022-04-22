@@ -2,13 +2,18 @@
     session_start();
     require('connect.php');
 
-    // Select the user to be edited using GET from url.
-        $userID = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-        $userID = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+    //Sanatize the ID
+    $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+    $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+    
+    if(!filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT) || !filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT))
+    {
+      header("location: index.php");
+    }  
     
         $selectQuery = "SELECT * FROM user WHERE user_id = :user_id";
         $selectStatement = $db->prepare($selectQuery);
-        $selectStatement->bindValue(':user_id', $userID);
+        $selectStatement->bindValue(':user_id', $id);
         $selectStatement->execute();
         $row = $selectStatement->fetch();
 
@@ -77,8 +82,17 @@
         
         if(!empty($_POST['search']))
         {
-            $_SESSION['searchterm'] = $_POST['search'];
-            header("location: search.php");
+            $searchTerm = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
+      
+            if(!filter_input(INPUT_POST, 'search', FILTER_SANITIZE_SPECIAL_CHARS))
+            {
+                header("location: index.php");
+            }
+            else
+            {
+                $_SESSION['searchterm'] = $searchTerm;
+                header("location: search.php");
+            }
         }
 ?>
 
@@ -103,28 +117,26 @@
 					<div class="container">
 						<form class="form_horizontal" method="post">
 							<div class="form_icon">
-								<img src="uploads/<?=$_SESSION['image_name']?>">
+								<img src="uploads/<?=$_SESSION['image_name']?>" alt="profile picture">
 							</div>
 							<h3 class="title">Edit User</h3>
 							<div class="form-group">
 								<a href="editprofilepicture.php?id=<?= $row['user_id'] ?>" class="btn btn-info">Change Profile Picture</a>                            </div>
 								<div class="form-group">
-									<label class="fs-3" for="Username">Edit Username</label>
-									<input type="text" class="form-control" name="username" type="text" value="<?=$row['user_name']?>">
+									<label class="fs-3">Edit Username</label>
+									<input type="text" class="form-control" name="username" value="<?=$row['user_name']?>">
 								</div>
 								<div class="form-group">
-								<h2>Edit Email</h2>
-								<input type="text" class="form-control" name="email" value="<?=$row['email']?>">
-							</div>
-							<input class ="btn signin bg-light text-danger" type="submit" name="modifyCommand" value="Modify">
-							<input class ="btn signin bg-danger text-light" name="deleteCommand" type="submit"name="login" value="Delete" onclick="return confirm('Are you sure you wish to delete this user?')">
-						</div>
-					</div>          
-				</form>
-			</div>
-		</div>
+								    <h2>Edit Email</h2>
+								    <input type="text" class="form-control" name="email" value="<?=$row['email']?>">
+							    </div>
+							    <input class ="btn signin bg-light text-danger" type="submit" name="modifyCommand" value="Modify">
+							    <input class ="btn signin bg-danger text-light" name="deleteCommand" type="submit" value="Delete" onclick="return confirm('Are you sure you wish to delete this user?')">
+						    </div>
+                        </form>                             
+                </div>
+            </section>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-	</section>
-</main>
+    </main>
 </body>
 </html>

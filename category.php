@@ -7,6 +7,11 @@
     $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
     $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
+    if(!filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT) || !filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT))
+    {
+      header("location: index.php");
+    }
+
     $selectMovie = "SELECT * FROM movie WHERE category_id = :category_id";
     $movieStatement = $db->prepare($selectMovie);
     $movieStatement->bindValue(':category_id', $_GET['id']);
@@ -22,8 +27,16 @@
     if($_SERVER["REQUEST_METHOD"] == "POST")
     {
       $searchTerm = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
-	    $_SESSION['searchterm'] = $searchTerm;
-	    header("location: search.php");
+      
+      if(!filter_input(INPUT_POST, 'search', FILTER_SANITIZE_SPECIAL_CHARS))
+      {
+          header("location: index.php");
+      }
+      else
+      {
+	      $_SESSION['searchterm'] = $searchTerm;
+	      header("location: search.php");
+      }
     }
 ?>
 
@@ -72,7 +85,7 @@
             
 
             <div class="col">
-                <h5 style="color: white;"">Movie Categories</h5>
+                <h5 style="color: white;">Movie Categories</h5>
                 <ul class="nav flex-column">
                     <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
                     <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>
@@ -94,8 +107,6 @@
             </div>
         </footer>
     </div>
-</div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-</div>
 </body>
 </html>

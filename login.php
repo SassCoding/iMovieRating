@@ -55,8 +55,17 @@
 
     if(!empty($_POST['search']))
     {
-	    $_SESSION['searchterm'] = $_POST['search'];
-	    header("location: search.php");
+      $searchTerm = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
+      
+      if(!filter_input(INPUT_POST, 'search', FILTER_SANITIZE_SPECIAL_CHARS))
+      {
+          header("location: index.php");
+      }
+      else
+      {
+	      $_SESSION['searchterm'] = $searchTerm;
+	      header("location: search.php");
+      }
     }
 ?>
 
@@ -85,7 +94,7 @@
               <h3 class="title">Login Form</h3>
               <div class="form-group">
                 <span class="input-icon"><i class="fa fa-user"></i></span>
-                <input type="text" class="form-control" name="username" type="text" placeholder="username">
+                <input class="form-control" name="username" type="text" placeholder="username">
                 <?php if(isset($userNameError)): ?>
                   <p class="fs-5"><?= $userNameError ?></p>
                 <?php endif ?>
@@ -102,10 +111,9 @@
                 <li><a href="#">Forgot Username/Password<i class="fa fa-arrow-right"></i></a></li>
                 <li><a href="signup.php">Create New Account<i class="fa fa-arrow-right"></i></a></li>
               </ul>
-            </div>          
           </form>
-        </div>
-      </div>
+          </div>  
+      </div>       
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
   </section>
 </main>

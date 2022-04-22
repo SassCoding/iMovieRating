@@ -18,8 +18,17 @@ $movies = $statement->fetchAll();
 
 if($_SERVER["REQUEST_METHOD"] == "POST")
 {
-	$_SESSION['searchterm'] = $_POST['search'];
-	header("location: search.php");
+    $searchTerm = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
+      
+    if(!filter_input(INPUT_POST, 'search', FILTER_SANITIZE_SPECIAL_CHARS))
+    {
+        header("location: index.php");
+    }
+    else
+    {
+        $_SESSION['searchterm'] = $searchTerm;
+        header("location: search.php");
+    }
 }
 
 ?>
@@ -42,7 +51,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
 					<?php foreach ($categories as $category) : ?>
 						<?php $counter = 0 ?>
 						<div>
-							<a class ="text-dark text-center" href="category.php?id=<?=$category['category_id']?>"><h1 id="category-head"><?= $category['category_name'] ?></h1></a>
+							<a class ="text-dark text-center" href="category.php?id=<?=$category['category_id']?>"><h1 class="category-head"><?= $category['category_name'] ?></h1></a>
             </div>
             <?php foreach ($movies as $movie) : ?>
 							<?php if($category['category_id'] === $movie['category_id'] && $counter < 3) : ?>
@@ -83,7 +92,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
             </div>
             
             <div class="col">
-            <h5 style="color: white;"">Movie Categories</h5>
+            <h5 style="color: white;">Movie Categories</h5>
                 <ul class="nav flex-column">
                     <li class="nav-item mb-2"><a href="category.php?id=1" class="nav-link p-0 text-muted">Science Fiction</a></li>
                     <li class="nav-item mb-2"><a href="category.php?id=2" class="nav-link p-0 text-muted">Comedy</a></li>
@@ -97,8 +106,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
             </div>
         </footer>
     </div>
-</div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-</div>
 </body>
 </html>

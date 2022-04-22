@@ -65,8 +65,17 @@
 
     if(!empty($_POST['search']))
     {
-	    $_SESSION['searchterm'] = $_POST['search'];
-	    header("location: search.php");
+      $searchTerm = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
+      
+      if(!filter_input(INPUT_POST, 'search', FILTER_SANITIZE_SPECIAL_CHARS))
+      {
+          header("location: index.php");
+      }
+      else
+      {
+	      $_SESSION['searchterm'] = $searchTerm;
+	      header("location: search.php");
+      }
     }
 ?>
 

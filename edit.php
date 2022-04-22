@@ -8,8 +8,14 @@
 
         //Sanitization
         $review  = filter_input(INPUT_POST, 'content', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $id      = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
-        $id      = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+    
+        $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+        $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+    
+        if(!filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT) || !filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT))
+        {
+          header("location: index.php");
+        }
 
         // Build the parameterized SQL query and bind to the above sanitized values.
         $query     = "UPDATE review SET content = :content WHERE review_id = :id";
@@ -52,8 +58,17 @@
 
     if(!empty($_POST['search']))
     {
-	    $_SESSION['searchterm'] = $_POST['search'];
-	    header("location: search.php");
+      $searchTerm = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
+      
+      if(!filter_input(INPUT_POST, 'search', FILTER_SANITIZE_SPECIAL_CHARS))
+      {
+          header("location: index.php");
+      }
+      else
+      {
+	      $_SESSION['searchterm'] = $searchTerm;
+	      header("location: search.php");
+      }
     }
 ?>
 

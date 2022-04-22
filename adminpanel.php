@@ -9,8 +9,17 @@
 
     if($_SERVER["REQUEST_METHOD"] == "POST")
     {
-	    $_SESSION['searchterm'] = $_POST['search'];
-	    header("location: search.php");
+      $searchTerm = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
+      
+      if(!filter_input(INPUT_POST, 'search', FILTER_SANITIZE_SPECIAL_CHARS))
+      {
+          header("location: index.php");
+      }
+      else
+      {
+	      $_SESSION['searchterm'] = $searchTerm;
+	      header("location: search.php");
+      }
     }
 ?>
 
@@ -32,6 +41,7 @@
   <?php include('nav.php') ?>
     <main>
       <section class="bg-dark text-dark p-5 text-left">
+        <H2 class="text-white text-center">ADMIN PANEL</H2>
       <div class="form_bg">
         <div class="container">
           <table class="table table-striped table-dark">
@@ -46,7 +56,7 @@
             <tbody>
               <?php while($selectRow = $selectStatement->fetch()): ?>
                 <tr>
-                  <th scope="row" name="user_id"><?= $selectRow['user_id'] ?></th>
+                  <th scope="row"><?= $selectRow['user_id'] ?></th>
                     <td><?= $selectRow['user_name'] ?></td>
                     <td><?= $selectRow['email'] ?></td>
                     <td>
@@ -58,6 +68,7 @@
           </table>
           <a href="adduser.php" class="btn btn-success">Add User</a>
         </div>
+      </div>
       </section>
     </main>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>

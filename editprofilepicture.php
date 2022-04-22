@@ -4,6 +4,15 @@
     $user_id = $_SESSION['user_id'];
     $uploadError = false;
 
+    //Sanatize the ID
+    $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+    $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        
+    if(!filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT) || !filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT))
+    {
+        header("location: index.php");
+    }
+
     //Finds the current profile picture
     $findImageQuery = "SELECT * FROM profileimage WHERE user_id = :user_id";
     $findImageStatement = $db->prepare($findImageQuery);
@@ -125,8 +134,17 @@
       }
       if(!empty($_POST['search']))
       {
-        $_SESSION['searchterm'] = $_POST['search'];
-        header("location: search.php");
+        $searchTerm = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
+      
+        if(!filter_input(INPUT_POST, 'search', FILTER_SANITIZE_SPECIAL_CHARS))
+        {
+            header("location: index.php");
+        }
+        else
+        {
+          $_SESSION['searchterm'] = $searchTerm;
+          header("location: search.php");
+        }
       }
 ?>
 <!DOCTYPE html>

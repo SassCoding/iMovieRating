@@ -96,8 +96,17 @@
 
         if(!empty($_POST['search']))
         {
-          $_SESSION['searchterm'] = $_POST['search'];
-          header("location: search.php");
+          $searchTerm = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
+      
+          if(!filter_input(INPUT_POST, 'search', FILTER_SANITIZE_SPECIAL_CHARS))
+          {
+              header("location: index.php");
+          }
+          else
+          {
+            $_SESSION['searchterm'] = $searchTerm;
+            header("location: search.php");
+          }
         }
 ?>
 
@@ -111,7 +120,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="style.css">
     
-    <title>iMovieRatings | Edit User</title>
+    <title>iMovieRatings | Sign Up</title>
 
 </head>
 <body>
@@ -126,8 +135,8 @@
               </div>
               <h3 class="title">Create Account</h3>
               <div class="form-group">
-                <label class="fs-3" for="Username">Enter your User Name</label>
-                <input type="text" class="form-control" name="username" type="text" placeholder="username" value="<?= $_SESSION['attemptedUsername']?>">
+                <label class="fs-3">Enter your User Name</label>
+                <input type="text" class="form-control" name="username" placeholder="username" value="<?= $_SESSION['attemptedUsername']?>">
                 <?php if(isset($userNameError)): ?>
                   <p class="fs-5"><?= $userNameError ?></p>
                 <?php endif ?>
@@ -153,17 +162,15 @@
                   <p class="fs-5"><?= $emailError ?><p>
                 <?php endif ?>
               </div>
-              <input type="text" id="captcha" name="captcha"></input>
+              <input type="text" id="captcha" name="captcha">
               <img id="captcha_image" src="captcha.php" alt="Captcha"><br>
               <?php if(isset($captchaError)): ?>
                 <p class="fs-5"><?= $captchaError ?><p>
               <?php endif ?>
               <input class ="btn signin bg-light text-danger" type="submit" name="login" value="Create Account">
+              </form>
             </div>
-          </div>          
-        </form>
-      </div>
-    </div>
+          </div>      
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </section>
 </main>
