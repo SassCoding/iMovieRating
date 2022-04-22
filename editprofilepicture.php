@@ -167,11 +167,11 @@
       <div class="container">
         <form class="form_horizontal" method="post" enctype="multipart/form-data">
           <div class="form_icon">
-            <img src="uploads/<?= $_SESSION['image_name']?>">
+            <img src="uploads/<?= $_SESSION['image_name']?>" alt="profile picture">
           </div>
           <h3 class="title">Edit User</h3>
           <div class="form-group">
-            <label class="fs-3" for="Username">Edit Profile Picture</label>
+            <label class="fs-3">Edit Profile Picture</label>
             <input type="file" name="image" id="image">
             <input type="submit" name="submit" value="Upload Image">
             <?php if($uploadError): ?>
