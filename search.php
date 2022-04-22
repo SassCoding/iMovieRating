@@ -11,6 +11,13 @@
     $searchStatement->execute();
     $results = $searchStatement->fetchAll(); 
 
+    $noResults = "";
+
+    if($results == null)
+    {
+      $noResults = "No movies matched your search.";
+    }
+
     if($_SERVER["REQUEST_METHOD"] == "POST")
     {
       $searchTerm = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -43,6 +50,9 @@
     <H2 class="text-white text-center">Search Results For: <?=$searchTerm ?></H2>
       <div class="form_bg">
         <div class="container">
+          <?php if($noResults != "") : ?>
+            <h1 class="text-center"><?= $noResults ?></h1>
+          <?php else : ?>
           <table class="table table-striped table-dark">
             <thead>
               <tr>
@@ -53,12 +63,13 @@
             <tbody>
               <?php foreach($results as $result) : ?>
                 <tr>
-                  <td><?= $result['movie_name'] ?></td>
+                  <td><a href="ratings.php?id=<?=$result['movie_id']?>"><?= $result['movie_name'] ?></a></td>
                   <td><?= $result['description'] ?></td>
                 </tr>
               <?php endforeach ?>
             </tbody>
           </table>
+        <?php endif ?>
         </div>
       </div>
       </section>

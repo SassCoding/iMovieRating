@@ -65,8 +65,9 @@
                 </tr>
               <?php endwhile ?>
             </tbody>
-          </table>
+              </table>
         </div>
+        <a href="adduser.php" class="btn btn-success">Add User</a>
       </div>
       <?php include 'footer.php'?>
       </section>

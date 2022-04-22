@@ -35,7 +35,7 @@
         <?php endif ?>
         </ul>
         <form method="post">
-          <input class = "search" type="text" name="search">
+          <input class = "search" type="text" name="search" placeholder="Search for a movie...">
           <button type="submit" id="button" class="btn btn-danger">Search</button>
         </form>
       </div>

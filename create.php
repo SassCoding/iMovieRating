@@ -3,8 +3,15 @@
     require('authenticate.php');
     session_start();
 
-    if ($_POST && !empty($_POST['content'])){
+    if ($_POST && !empty($_POST['content']))
+    {
         $content = filter_input(INPUT_POST, 'content', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        
+        if(!filter_input(INPUT_POST, 'content', FILTER_SANITIZE_FULL_SPECIAL_CHARS))
+        {
+            header("location:index.php");
+        }
+
         $movie_id = $_SESSION['movieId'];
 
         $query = "INSERT INTO review (movie_id, content, user_id, author) VALUES (:movie_id, :content, :user_id, :author)";
@@ -47,7 +54,7 @@
 </head>
 <body>
 	<?php include('nav.php'); ?>
-
+    <div class="container" id="movies">
 	<form method="post" class="row g-3 needs-validation" novalidate>
 		<div class="col-md-4">
 			<div class="input-group">
@@ -60,6 +67,8 @@
 			<input type="submit" name="create" value="Create" />
 		</div>
 	</form>
+    </div>
+    <?php include 'footer.php'?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>
 </html>

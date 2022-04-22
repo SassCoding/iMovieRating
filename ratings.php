@@ -80,7 +80,7 @@
       </div>
       <div class="list-group">
         <div class="container" id="movies" style="height: 100vh;">
-        <h1 class="text-center"><?= $rowQuery1['movie_name'] ?> Review's</h1>
+        <h1 class="text-center"><?= $rowQuery1['movie_name'] ?> Reviews</h1>
           <div class="row row-cols-1 row-cols-md-3">
             <?php while($rowQuery2 = $selectReviewStatement->fetch()): ?>
               <?php $user_id = $rowQuery2['user_id']; 
