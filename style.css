@@ -10,7 +10,7 @@
     color: white;
 }
 
-#movies{
+#movies, #topbar{
     background: linear-gradient(to bottom,#f83600,#fe8c00);
     height: 100%;
     border: 3px solid white;

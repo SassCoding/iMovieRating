@@ -57,10 +57,10 @@
     <title>Ratings Page</title>
   </head>
   
-  <body class="bg-dark" style="height: 100vm;">
+  <body class="bg-dark" style="height: 100vh;">
     <?php include('nav.php')?>
     <main class="mb-1">
-      <div class="container" id="movies">
+      <div class="container bg-light" id="topbar">
         <div class="panel panel-primary">
           <div class="panel-heading">
             <h3 class="panel-title"><?= $rowQuery1['movie_name'] ?></h3>
@@ -92,7 +92,7 @@
               <?php while($rowQuery3 = $selectImageStatement->fetch()):?>
                 <div class="col">
                   <div class="card mt-5 ms-5 bg-dark text-light border-light" style="width: 18rem; height: 100%">
-                    <img class="card-img-top" src="uploads/<?=$rowQuery3['image_name']?>" styles="width: 200px; height: 200px;" alt="Card image cap">
+                    <img class="card-img-top" src="uploads/<?=$rowQuery3['image_name']?>" alt="Card image cap">
                     <div class="card-body">
                       <h5 class="card-title fs-3 text-center"><?= $rowQuery2['author'] ?></h5>
                       <p class="card-text text-light fs-5 text-center"><?=$rowQuery2['content']?></p>
